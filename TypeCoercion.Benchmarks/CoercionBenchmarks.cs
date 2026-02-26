@@ -1,6 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
-using QueryBuilder.Core.Coercion;
+using TypeCoercion;
 using System;
 
 namespace TypeCoercion.Benchmarks;
@@ -21,7 +21,7 @@ public class CoercionBenchmarks
     [Benchmark]
     public Guid TypeCoercion_Guid_Coerce_Valid()
     {
-        return QueryBuilder.Core.Coercion.TypeCoercion.Coerce<Guid>("d3b07384-d113-40e1-a0a6-15ec83d6a2f9", _options);
+        return global::TypeCoercion.TypeCoercion.Coerce<Guid>("d3b07384-d113-40e1-a0a6-15ec83d6a2f9", _options);
     }
 
     [Benchmark]
@@ -33,7 +33,7 @@ public class CoercionBenchmarks
     [Benchmark]
     public bool TypeCoercion_Guid_TryCoerce_Invalid()
     {
-        return QueryBuilder.Core.Coercion.TypeCoercion.TryCoerce<Guid>("not-a-guid", _options).Success;
+        return global::TypeCoercion.TypeCoercion.TryCoerce<Guid>("not-a-guid", _options).Success;
     }
 
     // --- DateTime Coercion ---
@@ -47,7 +47,7 @@ public class CoercionBenchmarks
     [Benchmark]
     public DateTime TypeCoercion_DateTime_Coerce_Valid()
     {
-        return QueryBuilder.Core.Coercion.TypeCoercion.Coerce<DateTime>("2026-03-15T10:30:00", _options);
+        return global::TypeCoercion.TypeCoercion.Coerce<DateTime>("2026-03-15T10:30:00", _options);
     }
 
     [Benchmark]
@@ -59,7 +59,7 @@ public class CoercionBenchmarks
     [Benchmark]
     public bool TypeCoercion_DateTime_TryCoerce_Invalid()
     {
-        return QueryBuilder.Core.Coercion.TypeCoercion.TryCoerce<DateTime>("not-a-date", _options).Success;
+        return global::TypeCoercion.TypeCoercion.TryCoerce<DateTime>("not-a-date", _options).Success;
     }
 
     // --- Fallback Coercion ---
@@ -73,12 +73,12 @@ public class CoercionBenchmarks
     [Benchmark]
     public int TypeCoercion_Fallback_Coerce_Valid()
     {
-        return QueryBuilder.Core.Coercion.TypeCoercion.Coerce<int>("123", _options);
+        return global::TypeCoercion.TypeCoercion.Coerce<int>("123", _options);
     }
 
     [Benchmark]
     public bool TypeCoercion_Fallback_TryCoerce_Invalid()
     {
-        return QueryBuilder.Core.Coercion.TypeCoercion.TryCoerce<int>("not-a-number", _options).Success;
+        return global::TypeCoercion.TypeCoercion.TryCoerce<int>("not-a-number", _options).Success;
     }
 }

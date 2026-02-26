@@ -1,6 +1,6 @@
 using System;
 
-namespace QueryBuilder.Core.Coercion.Extensions;
+namespace TypeCoercion.Extensions;
 
 /// <summary>
 /// Extension methods for coercing string values.

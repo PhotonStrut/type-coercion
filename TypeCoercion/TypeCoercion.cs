@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.Json;
-using QueryBuilder.Core.Coercion.Coercers;
+using TypeCoercion.Coercers;
 
-namespace QueryBuilder.Core.Coercion;
+namespace TypeCoercion;
 
 /// <summary>
 /// Pure static utility for coercing values between CLR types.

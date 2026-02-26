@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace QueryBuilder.Core.Coercion.Extensions;
+namespace TypeCoercion.Extensions;
 
 /// <summary>
 /// Extension methods for coercing <see cref="JsonElement"/> values.

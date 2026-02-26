@@ -1,4 +1,4 @@
-namespace QueryBuilder.Core.Coercion;
+namespace TypeCoercion;
 
 /// <summary>
 /// Error codes indicating why a type coercion operation failed.

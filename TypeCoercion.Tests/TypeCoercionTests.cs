@@ -1,9 +1,9 @@
 using System.Text.Json;
-using QueryBuilder.Core.Coercion;
-using static QueryBuilder.Core.Coercion.TypeCoercion;
+using TypeCoercion;
+using static TypeCoercion.TypeCoercion;
 using Shouldly;
 
-namespace QueryBuilder.Core.Tests.Coercion;
+namespace TypeCoercion.Tests;
 
 public sealed class TypeCoercionTests
 {
@@ -116,7 +116,11 @@ public sealed class TypeCoercionTests
     public void TryCoerce_IntOverflow_PreciseParsing_ReturnsOverflow()
     {
         var options = new TypeCoercionOptions { UseFastNumericParsing = false };
-        var result = QueryBuilder.Core.Coercion.TypeCoercion.TryCoerce("99999999999999999999", typeof(int), options);
+        foreach (var coercer in TypeCoercionOptions.Default.Coercers)
+        {
+            options.Coercers.Add(coercer);
+        }
+        var result = TryCoerce("99999999999999999999", typeof(int), options);
 
         result.ShouldSatisfyAllConditions(
             () => result.Success.ShouldBeFalse(),

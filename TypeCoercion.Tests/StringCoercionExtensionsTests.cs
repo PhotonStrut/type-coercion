@@ -1,8 +1,8 @@
 using Shouldly;
-using QueryBuilder.Core.Coercion.Extensions;
+using TypeCoercion.Extensions;
 using Xunit;
 
-namespace QueryBuilder.Core.Tests.Coercion;
+namespace TypeCoercion.Tests;
 
 public class StringCoercionExtensionsTests
 {

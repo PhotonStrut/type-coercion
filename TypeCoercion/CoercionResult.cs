@@ -1,6 +1,6 @@
 using System;
 
-namespace QueryBuilder.Core.Coercion;
+namespace TypeCoercion;
 
 /// <summary>
 /// Result of a type coercion operation. Use <see cref="Ok"/> and <see cref="Fail(string, CoercionErrorCode)"/>

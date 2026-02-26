@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using AutoFixture;
 using NSubstitute;
-using QueryBuilder.Core.Coercion;
-using QueryBuilder.Core.Coercion.Coercers;
+using TypeCoercion;
+using TypeCoercion.Coercers;
 using Shouldly;
 using Xunit;
-using static QueryBuilder.Core.Coercion.TypeCoercion;
+using static TypeCoercion.TypeCoercion;
 
-namespace QueryBuilder.Core.Tests.Coercion;
+namespace TypeCoercion.Tests;
 
 public class EdgeCaseCoercionTests
 {

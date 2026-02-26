@@ -1,6 +1,6 @@
 using System;
 
-namespace QueryBuilder.Core.Coercion.Coercers;
+namespace TypeCoercion.Coercers;
 
 /// <remarks>
 /// Accepts numeric conversions via <see cref="Convert.ToBoolean(object, IFormatProvider)"/>

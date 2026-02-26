@@ -1,6 +1,6 @@
 using System;
 
-namespace QueryBuilder.Core.Coercion.Coercers;
+namespace TypeCoercion.Coercers;
 
 internal sealed class NumericTypeCoercer : ITypeCoercer
 {

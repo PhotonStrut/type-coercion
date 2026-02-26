@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace QueryBuilder.Core.Coercion;
+namespace TypeCoercion;
 
 /// <summary>
 /// Options for configuring type coercion behavior.

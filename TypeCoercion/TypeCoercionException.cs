@@ -1,6 +1,6 @@
 using System;
 
-namespace QueryBuilder.Core.Coercion;
+namespace TypeCoercion;
 
 /// <summary>
 /// Thrown when <see cref="TypeCoercion.Coerce(object?, Type)"/> cannot convert a value to the target type.

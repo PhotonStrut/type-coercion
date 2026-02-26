@@ -1,6 +1,6 @@
 using System;
 
-namespace QueryBuilder.Core.Coercion;
+namespace TypeCoercion;
 
 /// <summary>
 /// Defines a contract for coercing a value to a specific type.

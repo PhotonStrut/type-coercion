@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace QueryBuilder.Core.Coercion.Coercers;
+namespace TypeCoercion.Coercers;
 
 internal sealed class TimeOnlyTypeCoercer(ITypeCoercer fallbackCoercer) : ITypeCoercer
 {

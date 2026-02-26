@@ -1,9 +1,9 @@
 using Shouldly;
-using QueryBuilder.Core.Coercion;
-using static QueryBuilder.Core.Coercion.TypeCoercion;
+using TypeCoercion;
+using static TypeCoercion.TypeCoercion;
 using Xunit;
 
-namespace QueryBuilder.Core.Tests.Coercion;
+namespace TypeCoercion.Tests;
 
 public class TypeCoercionGenericTests
 {

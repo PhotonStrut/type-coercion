@@ -1,8 +1,8 @@
 using Shouldly;
-using QueryBuilder.Core.Coercion;
+using TypeCoercion;
 using Xunit;
 
-namespace QueryBuilder.Core.Tests.Coercion;
+namespace TypeCoercion.Tests;
 
 public class CoercionResultGenericTests
 {
