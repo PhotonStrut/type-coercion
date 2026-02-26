@@ -1,0 +1,31 @@
+using System;
+using System.Globalization;
+
+namespace QueryBuilder.Core.Coercion.Coercers;
+
+internal sealed class DateTimeTypeCoercer : ITypeCoercer
+{
+    public CoercionResult TryCoerce(object value, Type effectiveType, Type declaredType, TypeCoercionOptions options)
+    {
+        if (effectiveType != typeof(DateTime))
+            return CoercionResult.Fail("Type is not DateTime.", CoercionErrorCode.UnsupportedSourceType);
+
+        try
+        {
+            if (value is string dateString)
+                return CoercionResult.Ok(DateTime.Parse(dateString, options.Culture));
+            if (value is DateTimeOffset dateTimeOffset)
+                return CoercionResult.Ok(dateTimeOffset.DateTime);
+            if (value is DateOnly dateOnly)
+                return CoercionResult.Ok(dateOnly.ToDateTime(TimeOnly.MinValue));
+
+            return CoercionResult.Fail(
+                $"Cannot convert value of type '{value.GetType().Name}' to '{effectiveType.Name}'. Supported source types: string, DateTimeOffset, DateOnly.",
+                CoercionErrorCode.UnsupportedSourceType);
+        }
+        catch (Exception ex)
+        {
+            return TypeCoercion.CreateFailureFromException(value, declaredType, ex);
+        }
+    }
+}

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TypeCoercion.Tests/TypeCoercion.Tests.csproj" />
+  <Project Path="TypeCoercion/TypeCoercion.csproj" />
+</Solution>
