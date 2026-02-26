@@ -3,7 +3,7 @@ using System;
 namespace QueryBuilder.Core.Coercion;
 
 /// <summary>
-/// Thrown when <see cref="TypeCoercion.Coerce"/> cannot convert a value to the target type.
+/// Thrown when <see cref="TypeCoercion.Coerce(object?, Type)"/> cannot convert a value to the target type.
 /// </summary>
 public sealed class TypeCoercionException : InvalidOperationException
 {

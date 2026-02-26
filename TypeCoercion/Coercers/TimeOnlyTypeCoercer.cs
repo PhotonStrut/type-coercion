@@ -13,7 +13,11 @@ internal sealed class TimeOnlyTypeCoercer(ITypeCoercer fallbackCoercer) : ITypeC
         try
         {
             if (value is string timeString)
-                return CoercionResult.Ok(TimeOnly.Parse(timeString, options.Culture));
+            {
+                if (TimeOnly.TryParse(timeString, options.Culture, out var timeOnly))
+                    return CoercionResult.Ok(timeOnly);
+                return CoercionResult.Fail($"String '{timeString}' is not a valid TimeOnly.", CoercionErrorCode.InvalidFormat);
+            }
 
             return fallbackCoercer.TryCoerce(value, effectiveType, declaredType, options);
         }

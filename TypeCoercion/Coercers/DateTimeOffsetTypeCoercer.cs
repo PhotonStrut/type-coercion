@@ -13,7 +13,11 @@ internal sealed class DateTimeOffsetTypeCoercer : ITypeCoercer
         try
         {
             if (value is string dateString)
-                return CoercionResult.Ok(DateTimeOffset.Parse(dateString, options.Culture));
+            {
+                if (DateTimeOffset.TryParse(dateString, options.Culture, out var dateTimeOffset))
+                    return CoercionResult.Ok(dateTimeOffset);
+                return CoercionResult.Fail($"String '{dateString}' is not a valid DateTimeOffset.", CoercionErrorCode.InvalidFormat);
+            }
             if (value is DateTime dateTime)
                 return CoercionResult.Ok(new DateTimeOffset(dateTime));
             if (value is DateOnly dateOnly)

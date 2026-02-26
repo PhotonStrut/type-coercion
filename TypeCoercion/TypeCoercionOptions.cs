@@ -3,6 +3,9 @@ using System.Globalization;
 
 namespace QueryBuilder.Core.Coercion;
 
+/// <summary>
+/// Options for configuring type coercion behavior.
+/// </summary>
 public class TypeCoercionOptions
 {
     /// <summary>

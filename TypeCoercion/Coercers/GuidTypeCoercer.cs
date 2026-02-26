@@ -12,7 +12,11 @@ internal sealed class GuidTypeCoercer(ITypeCoercer fallbackCoercer) : ITypeCoerc
         try
         {
             if (value is string guidString)
-                return CoercionResult.Ok(Guid.Parse(guidString));
+            {
+                if (Guid.TryParse(guidString, out var guid))
+                    return CoercionResult.Ok(guid);
+                return CoercionResult.Fail($"String '{guidString}' is not a valid Guid.", CoercionErrorCode.InvalidFormat);
+            }
 
             return fallbackCoercer.TryCoerce(value, effectiveType, declaredType, options);
         }

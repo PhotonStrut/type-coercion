@@ -490,11 +490,11 @@ public sealed class TypeCoercionTests
     public void Coerce_InvalidConversion_PreservesInnerException()
     {
         var exception = Should.Throw<TypeCoercionException>(() =>
-            Coerce("not-a-guid", typeof(Guid)));
+            Coerce(new object(), typeof(int)));
 
         exception.ShouldSatisfyAllConditions(
             () => exception.InnerException.ShouldNotBeNull(),
-            () => exception.InnerException.ShouldBeOfType<FormatException>()
+            () => exception.InnerException.ShouldBeOfType<InvalidCastException>()
         );
     }
 

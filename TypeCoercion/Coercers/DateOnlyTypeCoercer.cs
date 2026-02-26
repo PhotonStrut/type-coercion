@@ -13,7 +13,11 @@ internal sealed class DateOnlyTypeCoercer(ITypeCoercer fallbackCoercer) : ITypeC
         try
         {
             if (value is string dateOnlyString)
-                return CoercionResult.Ok(DateOnly.Parse(dateOnlyString, options.Culture));
+            {
+                if (DateOnly.TryParse(dateOnlyString, options.Culture, out var dateOnly))
+                    return CoercionResult.Ok(dateOnly);
+                return CoercionResult.Fail($"String '{dateOnlyString}' is not a valid DateOnly.", CoercionErrorCode.InvalidFormat);
+            }
             if (value is DateTime dateTime)
                 return CoercionResult.Ok(DateOnly.FromDateTime(dateTime));
             if (value is DateTimeOffset dateTimeOffset)
