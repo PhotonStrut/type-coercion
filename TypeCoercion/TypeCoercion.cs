@@ -28,36 +28,6 @@ public static class TypeCoercion
         PropertyNameCaseInsensitive = true
     };
 
-    static TypeCoercion()
-    {
-        // Populate the default options with the built-in coercers
-        var options = TypeCoercionOptions.Default;
-        
-        var fallbackCoercer = new FallbackTypeCoercer();
-        
-        // Order matters for some of these if we ever change dispatch logic, 
-        // though currently we dispatch by type exactly.
-        
-        // Basic Types
-        options.Coercers.Add(new StringTypeCoercer());
-        options.Coercers.Add(new BoolTypeCoercer());
-        options.Coercers.Add(new GuidTypeCoercer(fallbackCoercer));
-        options.Coercers.Add(new EnumTypeCoercer());
-        
-        // Date and Time Types
-        options.Coercers.Add(new DateTimeTypeCoercer());
-        options.Coercers.Add(new DateTimeOffsetTypeCoercer());
-        options.Coercers.Add(new DateOnlyTypeCoercer(fallbackCoercer));
-        options.Coercers.Add(new TimeOnlyTypeCoercer(fallbackCoercer));
-        options.Coercers.Add(new TimeSpanTypeCoercer(fallbackCoercer));
-
-        // Numeric Types (shared coercer instance)
-        options.Coercers.Add(new NumericTypeCoercer());
-
-        // Always put the Fallback coercer at the very end
-        options.Coercers.Add(fallbackCoercer);
-    }
-
     /// <summary>
     /// Attempts to coerce <paramref name="value"/> to <paramref name="targetType"/> without throwing using default options.
     /// </summary>

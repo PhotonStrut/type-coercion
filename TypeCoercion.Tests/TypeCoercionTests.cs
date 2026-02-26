@@ -116,10 +116,6 @@ public sealed class TypeCoercionTests
     public void TryCoerce_IntOverflow_PreciseParsing_ReturnsOverflow()
     {
         var options = new TypeCoercionOptions { UseFastNumericParsing = false };
-        foreach (var coercer in TypeCoercionOptions.Default.Coercers)
-        {
-            options.Coercers.Add(coercer);
-        }
         var result = TryCoerce("99999999999999999999", typeof(int), options);
 
         result.ShouldSatisfyAllConditions(
