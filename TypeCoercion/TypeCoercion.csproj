@@ -4,6 +4,20 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    
+    <!-- NuGet Package Properties -->
+    <PackageId>TypeCoercion</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Ryan</Authors>
+    <Company>Ryan</Company>
+    <Description>A lightweight, extensible type coercion library for .NET</Description>
+    <PackageTags>type coercion;conversion;mapping;net10</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- <RepositoryUrl>https://github.com/your-username/type-coercion</RepositoryUrl> -->
+    <!-- <PackageReadmeFile>README.md</PackageReadmeFile> -->
+
+    <!-- Enable XML documentation for consumer IntelliSense -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
 </Project>
