@@ -1,5 +1,6 @@
 using System.Text.Json;
 using QueryBuilder.Core.Coercion;
+using static QueryBuilder.Core.Coercion.TypeCoercion;
 using Shouldly;
 
 namespace QueryBuilder.Core.Tests.Coercion;
@@ -18,13 +19,13 @@ public sealed class TypeCoercionTests
     public void Coerce_NullToNonNullableInt_ThrowsTypeCoercionException()
     {
         Should.Throw<TypeCoercionException>(() =>
-            TypeCoercion.Coerce(null, typeof(int)));
+            Coerce(null, typeof(int)));
     }
 
     [Fact]
     public void Coerce_NullToNullableInt_ReturnsNull()
     {
-        TypeCoercion.Coerce(null, typeof(int?)).ShouldBeNull();
+        Coerce(null, typeof(int?)).ShouldBeNull();
     }
 
     // ── Identity check ─────────────────────────────────────────────────
@@ -32,7 +33,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void Coerce_SameType_ReturnsSameValue()
     {
-        TypeCoercion.Coerce(42, typeof(int)).ShouldBe(42);
+        Coerce(42, typeof(int)).ShouldBe(42);
     }
 
     // ── Nullable target with non-null value (S6) ───────────────────────
@@ -40,7 +41,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void TryCoerce_StringToNullableInt_Succeeds()
     {
-        var result = TypeCoercion.TryCoerce("42", typeof(int?));
+        var result = TryCoerce("42", typeof(int?));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBe(42);
@@ -49,7 +50,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void TryCoerce_StringToNullableDateTime_Succeeds()
     {
-        var result = TypeCoercion.TryCoerce("2026-03-15", typeof(DateTime?));
+        var result = TryCoerce("2026-03-15", typeof(DateTime?));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBeOfType<DateTime>();
@@ -58,7 +59,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void TryCoerce_StringToNullableEnum_Succeeds()
     {
-        var result = TypeCoercion.TryCoerce("Tuesday", typeof(DayOfWeek?));
+        var result = TryCoerce("Tuesday", typeof(DayOfWeek?));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBe(DayOfWeek.Tuesday);
@@ -69,13 +70,13 @@ public sealed class TypeCoercionTests
     [Fact]
     public void Coerce_StringToInt_Parses()
     {
-        TypeCoercion.Coerce("123", typeof(int)).ShouldBe(123);
+        Coerce("123", typeof(int)).ShouldBe(123);
     }
 
     [Fact]
     public void Coerce_IntToDecimal_Converts()
     {
-        var result = TypeCoercion.Coerce(42, typeof(decimal));
+        var result = Coerce(42, typeof(decimal));
         result.ShouldBeOfType<decimal>();
         result.ShouldBe(42m);
     }
@@ -83,7 +84,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void TryCoerce_InvalidStringToInt_ReturnsInvalidFormat()
     {
-        var result = TypeCoercion.TryCoerce("not-a-number", typeof(int));
+        var result = TryCoerce("not-a-number", typeof(int));
 
         result.Success.ShouldBeFalse();
         result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidFormat);
@@ -92,7 +93,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void TryCoerce_IntOverflow_ReturnsOverflow()
     {
-        var result = TypeCoercion.TryCoerce("99999999999999999999", typeof(int));
+        var result = TryCoerce("99999999999999999999", typeof(int));
 
         result.Success.ShouldBeFalse();
         result.ErrorCode.ShouldBe(CoercionErrorCode.Overflow);
@@ -108,7 +109,7 @@ public sealed class TypeCoercionTests
     [InlineData("False", false)]
     public void TryCoerce_StringToBool_Parses(string input, bool expected)
     {
-        var result = TypeCoercion.TryCoerce(input, typeof(bool));
+        var result = TryCoerce(input, typeof(bool));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBe(expected);
@@ -119,7 +120,7 @@ public sealed class TypeCoercionTests
     [InlineData(0, false)]
     public void TryCoerce_NumericToBool_Converts(int input, bool expected)
     {
-        var result = TypeCoercion.TryCoerce(input, typeof(bool));
+        var result = TryCoerce(input, typeof(bool));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBe(expected);
@@ -128,7 +129,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void TryCoerce_InvalidStringToBool_Fails()
     {
-        var result = TypeCoercion.TryCoerce("not-a-bool", typeof(bool));
+        var result = TryCoerce("not-a-bool", typeof(bool));
 
         result.Success.ShouldBeFalse();
         result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidFormat);
@@ -139,7 +140,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void TryCoerce_IntToString_ReturnsToString()
     {
-        var result = TypeCoercion.TryCoerce(42, typeof(string));
+        var result = TryCoerce(42, typeof(string));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBe("42");
@@ -149,7 +150,7 @@ public sealed class TypeCoercionTests
     public void TryCoerce_DateTimeToString_ReturnsToString()
     {
         var dt = new DateTime(2026, 3, 15, 10, 30, 0);
-        var result = TypeCoercion.TryCoerce(dt, typeof(string));
+        var result = TryCoerce(dt, typeof(string));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBeOfType<string>();
@@ -161,21 +162,21 @@ public sealed class TypeCoercionTests
     [Fact]
     public void Coerce_StringToDateOnly_Parses()
     {
-        TypeCoercion.Coerce("2026-03-15", typeof(DateOnly))
+        Coerce("2026-03-15", typeof(DateOnly))
             .ShouldBe(new DateOnly(2026, 3, 15));
     }
 
     [Fact]
     public void Coerce_StringToDateTimeOffset_Parses()
     {
-        var result = TypeCoercion.Coerce("2026-03-15T10:30:00-05:00", typeof(DateTimeOffset));
+        var result = Coerce("2026-03-15T10:30:00-05:00", typeof(DateTimeOffset));
         result.ShouldBeOfType<DateTimeOffset>();
     }
 
     [Fact]
     public void Coerce_DateOnlyToDateTime_Converts()
     {
-        var result = TypeCoercion.Coerce(new DateOnly(2026, 3, 15), typeof(DateTime));
+        var result = Coerce(new DateOnly(2026, 3, 15), typeof(DateTime));
         result.ShouldBeOfType<DateTime>();
         ((DateTime)result!).Date.ShouldBe(new DateTime(2026, 3, 15));
     }
@@ -183,7 +184,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void TryCoerce_DateTimeToDateOnly_Converts()
     {
-        var result = TypeCoercion.TryCoerce(new DateTime(2026, 3, 15, 10, 30, 0), typeof(DateOnly));
+        var result = TryCoerce(new DateTime(2026, 3, 15, 10, 30, 0), typeof(DateOnly));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBe(new DateOnly(2026, 3, 15));
@@ -193,7 +194,7 @@ public sealed class TypeCoercionTests
     public void TryCoerce_DateTimeOffsetToDateTime_Converts()
     {
         var dto = new DateTimeOffset(2026, 3, 15, 10, 30, 0, TimeSpan.FromHours(-5));
-        var result = TypeCoercion.TryCoerce(dto, typeof(DateTime));
+        var result = TryCoerce(dto, typeof(DateTime));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBeOfType<DateTime>();
@@ -203,7 +204,7 @@ public sealed class TypeCoercionTests
     public void TryCoerce_DateTimeToDateTimeOffset_Converts()
     {
         var dt = new DateTime(2026, 3, 15, 10, 30, 0, DateTimeKind.Utc);
-        var result = TypeCoercion.TryCoerce(dt, typeof(DateTimeOffset));
+        var result = TryCoerce(dt, typeof(DateTimeOffset));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBeOfType<DateTimeOffset>();
@@ -215,7 +216,7 @@ public sealed class TypeCoercionTests
     public void Coerce_StringToGuid_Parses()
     {
         var guid = Guid.NewGuid();
-        TypeCoercion.Coerce(guid.ToString(), typeof(Guid)).ShouldBe(guid);
+        Coerce(guid.ToString(), typeof(Guid)).ShouldBe(guid);
     }
 
     // ── Time coercion ──────────────────────────────────────────────────
@@ -223,14 +224,14 @@ public sealed class TypeCoercionTests
     [Fact]
     public void Coerce_StringToTimeOnly_Parses()
     {
-        TypeCoercion.Coerce("14:30:00", typeof(TimeOnly))
+        Coerce("14:30:00", typeof(TimeOnly))
             .ShouldBe(new TimeOnly(14, 30, 0));
     }
 
     [Fact]
     public void Coerce_StringToTimeSpan_Parses()
     {
-        TypeCoercion.Coerce("01:02:03", typeof(TimeSpan))
+        Coerce("01:02:03", typeof(TimeSpan))
             .ShouldBe(new TimeSpan(1, 2, 3));
     }
 
@@ -242,13 +243,13 @@ public sealed class TypeCoercionTests
     [InlineData("Monday", DayOfWeek.Monday)]
     public void Coerce_StringToEnum_CaseInsensitive(string input, DayOfWeek expected)
     {
-        TypeCoercion.Coerce(input, typeof(DayOfWeek)).ShouldBe(expected);
+        Coerce(input, typeof(DayOfWeek)).ShouldBe(expected);
     }
 
     [Fact]
     public void TryCoerce_EnumNumericString_ReturnsInvalidEnumMember()
     {
-        var result = TypeCoercion.TryCoerce("1", typeof(DayOfWeek));
+        var result = TryCoerce("1", typeof(DayOfWeek));
 
         result.Success.ShouldBeFalse();
         result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidEnumMember);
@@ -258,7 +259,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void TryCoerce_EnumNumericValue_ReturnsUnsupportedSourceType()
     {
-        var result = TypeCoercion.TryCoerce(1, typeof(DayOfWeek));
+        var result = TryCoerce(1, typeof(DayOfWeek));
 
         result.Success.ShouldBeFalse();
         result.ErrorCode.ShouldBe(CoercionErrorCode.UnsupportedSourceType);
@@ -268,7 +269,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void TryCoerce_InvalidEnumName_ReturnsInvalidEnumMember()
     {
-        var result = TypeCoercion.TryCoerce("NotADay", typeof(DayOfWeek));
+        var result = TryCoerce("NotADay", typeof(DayOfWeek));
 
         result.Success.ShouldBeFalse();
         result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidEnumMember);
@@ -280,7 +281,7 @@ public sealed class TypeCoercionTests
     public void TryCoerce_UnsupportedTypeViaFallback_UsesConvertChangeType()
     {
         // char is not registered in the coercer dictionary — falls through to FallbackTypeCoercer
-        var result = TypeCoercion.TryCoerce("A", typeof(char));
+        var result = TryCoerce("A", typeof(char));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBe('A');
@@ -289,7 +290,7 @@ public sealed class TypeCoercionTests
     [Fact]
     public void TryCoerce_IncompatibleFallback_ReturnsConversionFailed()
     {
-        var result = TypeCoercion.TryCoerce(new object(), typeof(int));
+        var result = TryCoerce(new object(), typeof(int));
 
         result.Success.ShouldBeFalse();
         result.ErrorCode.ShouldBe(CoercionErrorCode.ConversionFailed);
@@ -302,7 +303,7 @@ public sealed class TypeCoercionTests
     {
         var value = ParseJsonElement("\"123\"");
 
-        var result = TypeCoercion.TryCoerce(value, typeof(int));
+        var result = TryCoerce(value, typeof(int));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBe(123);
@@ -313,7 +314,7 @@ public sealed class TypeCoercionTests
     {
         var value = ParseJsonElement("123.45");
 
-        var result = TypeCoercion.TryCoerce(value, typeof(decimal));
+        var result = TryCoerce(value, typeof(decimal));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBe(123.45m);
@@ -328,7 +329,7 @@ public sealed class TypeCoercionTests
     public void TryCoerce_JsonElementNumberToSmallIntTypes_Succeeds(string json, Type targetType, object expected)
     {
         var value = ParseJsonElement(json);
-        var result = TypeCoercion.TryCoerce(value, targetType);
+        var result = TryCoerce(value, targetType);
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBe(expected);
@@ -339,7 +340,7 @@ public sealed class TypeCoercionTests
     {
         var value = ParseJsonElement("true");
 
-        var result = TypeCoercion.TryCoerce(value, typeof(bool));
+        var result = TryCoerce(value, typeof(bool));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBe(true);
@@ -350,7 +351,7 @@ public sealed class TypeCoercionTests
     {
         var value = ParseJsonElement("null");
 
-        var result = TypeCoercion.TryCoerce(value, typeof(int?));
+        var result = TryCoerce(value, typeof(int?));
 
         result.Success.ShouldBeTrue();
         result.Value.ShouldBeNull();
@@ -361,7 +362,7 @@ public sealed class TypeCoercionTests
     {
         var value = ParseJsonElement("null");
 
-        var result = TypeCoercion.TryCoerce(value, typeof(int));
+        var result = TryCoerce(value, typeof(int));
 
         result.Success.ShouldBeFalse();
         result.ErrorCode.ShouldBe(CoercionErrorCode.ConversionFailed);
@@ -372,7 +373,7 @@ public sealed class TypeCoercionTests
     {
         var value = ParseJsonElement("""{"name":"Ada","age":42}""");
 
-        var result = TypeCoercion.TryCoerce(value, typeof(JsonPayload));
+        var result = TryCoerce(value, typeof(JsonPayload));
 
         result.Success.ShouldBeTrue();
         var payload = result.Value.ShouldBeOfType<JsonPayload>();
@@ -385,7 +386,7 @@ public sealed class TypeCoercionTests
     {
         var value = ParseJsonElement("[1,2,3]");
 
-        var result = TypeCoercion.TryCoerce(value, typeof(List<int>));
+        var result = TryCoerce(value, typeof(List<int>));
 
         result.Success.ShouldBeTrue();
         var list = result.Value.ShouldBeOfType<List<int>>();
@@ -397,7 +398,7 @@ public sealed class TypeCoercionTests
     {
         var value = ParseJsonElement("""{"value":123}""");
 
-        var result = TypeCoercion.TryCoerce(value, typeof(int));
+        var result = TryCoerce(value, typeof(int));
 
         result.Success.ShouldBeFalse();
         result.ErrorCode.ShouldBe(CoercionErrorCode.UnsupportedSourceType);
@@ -408,7 +409,7 @@ public sealed class TypeCoercionTests
     {
         var value = ParseJsonElement("""["a","b"]""");
 
-        var result = TypeCoercion.TryCoerce(value, typeof(string));
+        var result = TryCoerce(value, typeof(string));
 
         result.Success.ShouldBeFalse();
         result.ErrorCode.ShouldBe(CoercionErrorCode.UnsupportedSourceType);
@@ -420,7 +421,7 @@ public sealed class TypeCoercionTests
     public void Coerce_InvalidConversion_ThrowsWithErrorCode()
     {
         var exception = Should.Throw<TypeCoercionException>(() =>
-            TypeCoercion.Coerce("not-a-guid", typeof(Guid)));
+            Coerce("not-a-guid", typeof(Guid)));
 
         exception.ErrorCode.ShouldBe(CoercionErrorCode.InvalidFormat);
     }
@@ -429,7 +430,7 @@ public sealed class TypeCoercionTests
     public void Coerce_InvalidConversion_PreservesInnerException()
     {
         var exception = Should.Throw<TypeCoercionException>(() =>
-            TypeCoercion.Coerce("not-a-guid", typeof(Guid)));
+            Coerce("not-a-guid", typeof(Guid)));
 
         exception.InnerException.ShouldNotBeNull();
         exception.InnerException.ShouldBeOfType<FormatException>();
@@ -487,7 +488,7 @@ public sealed class TypeCoercionTests
     {
         // This tests that the exception filter removal (C1) works correctly.
         // Passing an unusual type that might trigger unexpected exceptions.
-        var result = TypeCoercion.TryCoerce(new object(), typeof(DateTime));
+        var result = TryCoerce(new object(), typeof(DateTime));
 
         result.Success.ShouldBeFalse();
         result.ErrorCode.ShouldNotBe(CoercionErrorCode.None);

@@ -1,5 +1,5 @@
 using System.Text.Json;
-using FluentAssertions;
+using Shouldly;
 using QueryBuilder.Core.Coercion.Extensions;
 using Xunit;
 
@@ -11,6 +11,6 @@ public class JsonElementCoercionExtensionsTests
     public void CoerceTo_Works()
     {
         var json = JsonDocument.Parse("42").RootElement;
-        json.CoerceTo<int>().Should().Be(42);
+        json.CoerceTo<int>().ShouldBe(42);
     }
 }
