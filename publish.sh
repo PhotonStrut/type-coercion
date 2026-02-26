@@ -7,15 +7,17 @@ set -e
 NUGET_SOURCE="https://api.nuget.org/v3/index.json"
 PROJECT_DIR="TypeCoercion"
 
-# Ensure API key is provided
-if [ -z "$1" ]; then
-    echo "Error: NuGet API key is required."
+# Ensure API key is provided via environment variable
+if [ -z "$NUGET_API_KEY" ]; then
+    echo "Error: NUGET_API_KEY environment variable is not set."
     echo ""
-    echo "Usage: ./publish.sh <NUGET_API_KEY>"
+    echo "Set it by adding to your shell profile (~/.zshrc):"
+    echo "  export NUGET_API_KEY=\"your-api-key-here\""
+    echo ""
+    echo "Or set it inline for a single run:"
+    echo "  NUGET_API_KEY=\"your-api-key-here\" ./publish.sh"
     exit 1
 fi
-
-NUGET_API_KEY=$1
 
 echo "Packing $PROJECT_DIR for release..."
 dotnet pack $PROJECT_DIR -c Release
