@@ -12,7 +12,7 @@ internal sealed class FallbackTypeCoercer : ITypeCoercer
         }
         catch (Exception ex)
         {
-            return TypeCoercion.CreateFailureFromException(value, declaredType, ex);
+            return TypeCoercer.CreateFailureFromException(value, declaredType, ex);
         }
     }
 }

@@ -6,7 +6,7 @@ using TypeCoercion;
 using TypeCoercion.Coercers;
 using Shouldly;
 using Xunit;
-using static TypeCoercion.TypeCoercion;
+using static TypeCoercion.TypeCoercer;
 
 namespace TypeCoercion.Tests;
 

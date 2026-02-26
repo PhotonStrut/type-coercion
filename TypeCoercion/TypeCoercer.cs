@@ -9,7 +9,7 @@ namespace TypeCoercion;
 /// <summary>
 /// Pure static utility for coercing values between CLR types.
 /// </summary>
-public static class TypeCoercion
+public static class TypeCoercer
 {
     private static readonly Type[] NumericTypes =
     [

@@ -6,7 +6,7 @@ internal sealed class NumericTypeCoercer : ITypeCoercer
 {
     public CoercionResult TryCoerce(object value, Type effectiveType, Type declaredType, TypeCoercionOptions options)
     {
-        if (!TypeCoercion.IsNumericType(effectiveType))
+        if (!TypeCoercer.IsNumericType(effectiveType))
             return CoercionResult.Fail("Type is not numeric.", CoercionErrorCode.UnsupportedSourceType);
 
         if (options.UseFastNumericParsing && value is string stringValue)
@@ -49,7 +49,7 @@ internal sealed class NumericTypeCoercer : ITypeCoercer
         }
         catch (Exception ex)
         {
-            return TypeCoercion.CreateFailureFromException(value, declaredType, ex);
+            return TypeCoercer.CreateFailureFromException(value, declaredType, ex);
         }
     }
 }

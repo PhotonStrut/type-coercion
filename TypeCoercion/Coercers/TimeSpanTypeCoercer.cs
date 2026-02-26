@@ -23,7 +23,7 @@ internal sealed class TimeSpanTypeCoercer(ITypeCoercer fallbackCoercer) : ITypeC
         }
         catch (Exception ex)
         {
-            return TypeCoercion.CreateFailureFromException(value, declaredType, ex);
+            return TypeCoercer.CreateFailureFromException(value, declaredType, ex);
         }
     }
 }

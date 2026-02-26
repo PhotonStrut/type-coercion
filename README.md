@@ -31,14 +31,14 @@ dotnet add package TypeCoercion
 ```csharp
 using TypeCoercion;
 
-var result = TypeCoercion.TryCoerce<int>("42");
+var result = TypeCoercer.TryCoerce<int>("42");
 
 if (result.Success)
 {
     Console.WriteLine($"Number: {result.Value}"); // Output: Number: 42
 }
 
-var invalid = TypeCoercion.TryCoerce<Guid>("not-a-guid");
+var invalid = TypeCoercer.TryCoerce<Guid>("not-a-guid");
 
 if (!invalid.Success)
 {
@@ -54,11 +54,11 @@ if (!invalid.Success)
 ```csharp
 using TypeCoercion;
 
-DateTime date = TypeCoercion.Coerce<DateTime>("2026-01-01T12:00:00Z");
+DateTime date = TypeCoercer.Coerce<DateTime>("2026-01-01T12:00:00Z");
 
 try
 {
-    int number = TypeCoercion.Coerce<int>("not_a_number");
+    int number = TypeCoercer.Coerce<int>("not_a_number");
 }
 catch (TypeCoercionException ex)
 {
@@ -71,8 +71,8 @@ catch (TypeCoercionException ex)
 When the target type is only known at runtime:
 
 ```csharp
-CoercionResult result = TypeCoercion.TryCoerce("42", typeof(int));
-object? value = TypeCoercion.Coerce("42", typeof(int));
+CoercionResult result = TypeCoercer.TryCoerce("42", typeof(int));
+object? value = TypeCoercer.Coerce("42", typeof(int));
 ```
 
 ## Extension Methods
@@ -129,7 +129,7 @@ CoercionResult<int> result = data.TryCoerceValue<int>("id");
 ```csharp
 JsonElement element = GetJsonFromSomewhere();
 
-var result = TypeCoercion.TryCoerce<MyCustomDto>(element);
+var result = TypeCoercer.TryCoerce<MyCustomDto>(element);
 ```
 
 ## Error Codes
@@ -158,7 +158,7 @@ var options = new TypeCoercionOptions
     UseFastNumericParsing = false
 };
 
-var result = TypeCoercion.TryCoerce<decimal>("12,5", options);
+var result = TypeCoercer.TryCoerce<decimal>("12,5", options);
 ```
 
 | Property | Default | Description |
@@ -188,7 +188,7 @@ Return `CoercionResult.Ok(value)` on success, `CoercionResult.Fail(...)` with `U
 var options = new TypeCoercionOptions();
 options.Coercers.Insert(0, new MyCustomCoercer()); // runs before built-in coercers
 
-var result = TypeCoercion.TryCoerce<MyType>(value, options);
+var result = TypeCoercer.TryCoerce<MyType>(value, options);
 ```
 
 ## Built-In Coercer Behavior

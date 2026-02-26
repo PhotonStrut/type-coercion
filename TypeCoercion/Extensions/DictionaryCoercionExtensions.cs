@@ -15,7 +15,7 @@ public static class DictionaryCoercionExtensions
         if (!dict.TryGetValue(key, out var value))
             throw new KeyNotFoundException($"The given key '{key}' was not present in the dictionary.");
             
-        return TypeCoercion.Coerce<T>(value, options ?? TypeCoercionOptions.Default);
+        return TypeCoercer.Coerce<T>(value, options ?? TypeCoercionOptions.Default);
     }
 
     /// <summary>
@@ -26,7 +26,7 @@ public static class DictionaryCoercionExtensions
         if (!dict.TryGetValue(key, out var value))
             return defaultValue;
             
-        var result = TypeCoercion.TryCoerce<T>(value, options ?? TypeCoercionOptions.Default);
+        var result = TypeCoercer.TryCoerce<T>(value, options ?? TypeCoercionOptions.Default);
         if (result.Success)
         {
              return result.Value;
@@ -42,6 +42,6 @@ public static class DictionaryCoercionExtensions
         if (!dict.TryGetValue(key, out var value))
             return CoercionResult<T>.Fail($"The given key '{key}' was not present in the dictionary.", CoercionErrorCode.UnsupportedSourceType);
             
-        return TypeCoercion.TryCoerce<T>(value, options ?? TypeCoercionOptions.Default);
+        return TypeCoercer.TryCoerce<T>(value, options ?? TypeCoercionOptions.Default);
     }
 }

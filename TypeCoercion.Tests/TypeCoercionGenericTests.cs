@@ -1,6 +1,6 @@
 using Shouldly;
 using TypeCoercion;
-using static TypeCoercion.TypeCoercion;
+using static TypeCoercion.TypeCoercer;
 using Xunit;
 
 namespace TypeCoercion.Tests;

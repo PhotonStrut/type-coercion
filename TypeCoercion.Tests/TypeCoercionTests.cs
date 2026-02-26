@@ -1,6 +1,6 @@
 using System.Text.Json;
 using TypeCoercion;
-using static TypeCoercion.TypeCoercion;
+using static TypeCoercion.TypeCoercer;
 using Shouldly;
 
 namespace TypeCoercion.Tests;
