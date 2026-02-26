@@ -101,13 +101,26 @@ public sealed class TypeCoercionTests
     }
 
     [Fact]
-    public void TryCoerce_IntOverflow_ReturnsOverflow()
+    public void TryCoerce_IntOverflow_FastParsing_ReturnsInvalidFormat()
     {
+        // By default, UseFastNumericParsing is true, which collapses Overflows into InvalidFormat for speed
         var result = TryCoerce("99999999999999999999", typeof(int));
 
         result.ShouldSatisfyAllConditions(
             () => result.Success.ShouldBeFalse(),
-            () => result.ErrorCode.ShouldBe(CoercionErrorCode.Overflow)
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidFormat)
+        );
+    }
+
+    [Fact]
+    public void TryCoerce_IntOverflow_PreciseParsing_ReturnsOverflow()
+    {
+        var options = new TypeCoercionOptions { UseFastNumericParsing = false };
+        var result = QueryBuilder.Core.Coercion.TypeCoercion.TryCoerce("99999999999999999999", typeof(int), options);
+
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.Overflow) // Using Convert.ChangeType
         );
     }
 

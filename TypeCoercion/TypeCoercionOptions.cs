@@ -20,6 +20,15 @@ public class TypeCoercionOptions
     public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
 
     /// <summary>
+    /// When true, numeric coercion uses optimized `.TryParse` fast-paths for string inputs.
+    /// Note: These fast-paths treat overflow failures as standard format failures (<see cref="CoercionErrorCode.InvalidFormat"/>).
+    /// When false, numeric coercion uses <see cref="System.Convert.ChangeType(object, System.Type, System.IFormatProvider)"/>, delivering precise error codes 
+    /// (e.g., <see cref="CoercionErrorCode.Overflow"/>) at the cost of performance on invalid input. 
+    /// Defaults to true.
+    /// </summary>
+    public bool UseFastNumericParsing { get; set; } = true;
+
+    /// <summary>
     /// A shared, thread-safe default instance used when no options are provided.
     /// </summary>
     public static TypeCoercionOptions Default { get; } = new TypeCoercionOptions();
