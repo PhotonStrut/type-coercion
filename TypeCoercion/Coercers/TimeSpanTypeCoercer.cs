@@ -16,7 +16,7 @@ internal sealed class TimeSpanTypeCoercer(ITypeCoercer fallbackCoercer) : ITypeC
             {
                 if (TimeSpan.TryParse(timeSpanString, options.Culture, out var timeSpan))
                     return CoercionResult.Ok(timeSpan);
-                return CoercionResult.Fail($"String '{timeSpanString}' is not a valid TimeSpan.", CoercionErrorCode.InvalidFormat);
+                return CoercionResult.Fail("The provided string is not a valid TimeSpan.", CoercionErrorCode.InvalidFormat);
             }
 
             return fallbackCoercer.TryCoerce(value, effectiveType, declaredType, options);

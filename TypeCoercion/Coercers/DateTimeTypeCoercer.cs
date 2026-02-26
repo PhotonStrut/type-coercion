@@ -16,7 +16,7 @@ internal sealed class DateTimeTypeCoercer : ITypeCoercer
             {
                 if (DateTime.TryParse(dateString, options.Culture, out var dateTime))
                     return CoercionResult.Ok(dateTime);
-                return CoercionResult.Fail($"String '{dateString}' is not a valid DateTime.", CoercionErrorCode.InvalidFormat);
+                return CoercionResult.Fail("The provided string is not a valid DateTime.", CoercionErrorCode.InvalidFormat);
             }
             if (value is DateTimeOffset dateTimeOffset)
                 return CoercionResult.Ok(dateTimeOffset.DateTime);
@@ -24,7 +24,7 @@ internal sealed class DateTimeTypeCoercer : ITypeCoercer
                 return CoercionResult.Ok(dateOnly.ToDateTime(TimeOnly.MinValue));
 
             return CoercionResult.Fail(
-                $"Cannot convert value of type '{value.GetType().Name}' to '{effectiveType.Name}'. Supported source types: string, DateTimeOffset, DateOnly.",
+                "Cannot convert the provided value to DateTime. Supported source types: string, DateTimeOffset, DateOnly.",
                 CoercionErrorCode.UnsupportedSourceType);
         }
         catch (Exception ex)

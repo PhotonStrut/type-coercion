@@ -109,16 +109,19 @@ public static class TypeCoercion
         if (effectiveType.IsEnum)
         {
             // Specifically route enums to the EnumTypeCoercer if one exists
-            foreach (var coercer in options.Coercers)
+            for (var i = 0; i < options.Coercers.Count; i++)
             {
+                var coercer = options.Coercers[i];
                 if (coercer is EnumTypeCoercer)
                     return coercer.TryCoerce(value, effectiveType, declaredType, options);
             }
         }
 
         // 1. Check custom and built-in coercers
-        foreach (var coercer in options.Coercers)
+        for (var i = 0; i < options.Coercers.Count; i++)
         {
+            var coercer = options.Coercers[i];
+            
             // Skip the EnumTypeCoercer here to prevent ArgumentException on non-enum types
             if (coercer is EnumTypeCoercer && !effectiveType.IsEnum) continue;
 
@@ -134,7 +137,7 @@ public static class TypeCoercion
         }
 
         return CoercionResult.Fail(
-            $"No coercer found for source type '{value.GetType().Name}' and target type '{effectiveType.Name}'.",
+            "No coercer found for the requested source and target type.",
             CoercionErrorCode.ConversionFailed);
     }
 

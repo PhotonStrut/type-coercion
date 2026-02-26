@@ -19,7 +19,7 @@ internal sealed class BoolTypeCoercer : ITypeCoercer
             if (bool.TryParse(boolString, out var boolValue))
                 return CoercionResult.Ok(boolValue);
             return CoercionResult.Fail(
-                $"String '{boolString}' is not a valid Boolean.",
+                "The provided string is not a valid Boolean.",
                 CoercionErrorCode.InvalidFormat);
         }
 
