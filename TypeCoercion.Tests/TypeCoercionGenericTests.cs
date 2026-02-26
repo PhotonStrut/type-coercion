@@ -12,8 +12,10 @@ public class TypeCoercionGenericTests
     {
         var result = TryCoerce<int>("42");
         
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(42);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(42)
+        );
     }
     
     [Fact]
@@ -21,8 +23,10 @@ public class TypeCoercionGenericTests
     {
         var result = TryCoerce<int>("not-a-number");
         
-        result.Success.ShouldBeFalse();
-        result.Value.ShouldBe(0);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.Value.ShouldBe(0)
+        );
     }
 
     [Fact]

@@ -27,14 +27,18 @@ public class EdgeCaseCoercionTests
 
         if (shouldSucceed)
         {
-            result.Success.ShouldBeTrue();
-            result.Value.ShouldNotBeNull();
+            result.ShouldSatisfyAllConditions(
+                () => result.Success.ShouldBeTrue(),
+                () => result.Value.ShouldNotBeNull()
+            );
         }
         else
         {
-            result.Success.ShouldBeFalse();
-            // Edge cases usually fail due to overflow or format issues
-            result.ErrorCode.ShouldBeOneOf(CoercionErrorCode.Overflow, CoercionErrorCode.InvalidFormat, CoercionErrorCode.UnsupportedSourceType, CoercionErrorCode.ConversionFailed);
+            result.ShouldSatisfyAllConditions(
+                () => result.Success.ShouldBeFalse(),
+                // Edge cases usually fail due to overflow or format issues
+                () => result.ErrorCode.ShouldBeOneOf(CoercionErrorCode.Overflow, CoercionErrorCode.InvalidFormat, CoercionErrorCode.UnsupportedSourceType, CoercionErrorCode.ConversionFailed)
+            );
         }
     }
 
@@ -57,8 +61,10 @@ public class EdgeCaseCoercionTests
         var result = TryCoerce(input, targetType, options);
 
         // 4. Assert with Shouldly constraints
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(new DateTime(2099, 1, 1));
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(new DateTime(2099, 1, 1))
+        );
         
         // Verify mock was called
         mockCoercer.Received(1).TryCoerce(input, targetType, targetType, options);
@@ -76,8 +82,10 @@ public class EdgeCaseCoercionTests
         TryCoerce(randomIntStr, typeof(int)).Success.ShouldBeTrue();
         
         var decimalCoerce = TryCoerce(randomDecimal, typeof(decimal));
-        decimalCoerce.Success.ShouldBeTrue();
-        decimalCoerce.Value.ShouldBe(randomDecimal);
+        decimalCoerce.ShouldSatisfyAllConditions(
+            () => decimalCoerce.Success.ShouldBeTrue(),
+            () => decimalCoerce.Value.ShouldBe(randomDecimal)
+        );
     }
 
     private class NumericEdgeCaseProvider : TheoryData<object, Type, bool>

@@ -16,11 +16,15 @@ public class StringCoercionExtensionsTests
     public void TryCoerceTo_WithOutParam_Works()
     {
         var success = "42".TryCoerceTo<int>(out var result);
-        success.ShouldBeTrue();
-        result.ShouldBe(42);
+        success.ShouldSatisfyAllConditions(
+            () => success.ShouldBeTrue(),
+            () => result.ShouldBe(42)
+        );
         
         var fail = "xyz".TryCoerceTo<int>(out var failResult);
-        fail.ShouldBeFalse();
-        failResult.ShouldBe(0);
+        fail.ShouldSatisfyAllConditions(
+            () => fail.ShouldBeFalse(),
+            () => failResult.ShouldBe(0)
+        );
     }
 }

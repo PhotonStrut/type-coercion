@@ -43,8 +43,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce("42", typeof(int?));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(42);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(42)
+        );
     }
 
     [Fact]
@@ -52,8 +54,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce("2026-03-15", typeof(DateTime?));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBeOfType<DateTime>();
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBeOfType<DateTime>()
+        );
     }
 
     [Fact]
@@ -61,8 +65,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce("Tuesday", typeof(DayOfWeek?));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(DayOfWeek.Tuesday);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(DayOfWeek.Tuesday)
+        );
     }
 
     // ── Numeric coercion ───────────────────────────────────────────────
@@ -77,8 +83,10 @@ public sealed class TypeCoercionTests
     public void Coerce_IntToDecimal_Converts()
     {
         var result = Coerce(42, typeof(decimal));
-        result.ShouldBeOfType<decimal>();
-        result.ShouldBe(42m);
+        result.ShouldSatisfyAllConditions(
+            () => result.ShouldBeOfType<decimal>(),
+            () => result.ShouldBe(42m)
+        );
     }
 
     [Fact]
@@ -86,8 +94,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce("not-a-number", typeof(int));
 
-        result.Success.ShouldBeFalse();
-        result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidFormat);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidFormat)
+        );
     }
 
     [Fact]
@@ -95,8 +105,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce("99999999999999999999", typeof(int));
 
-        result.Success.ShouldBeFalse();
-        result.ErrorCode.ShouldBe(CoercionErrorCode.Overflow);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.Overflow)
+        );
     }
 
     // ── Bool coercion (I5) ─────────────────────────────────────────────
@@ -111,8 +123,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce(input, typeof(bool));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(expected);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(expected)
+        );
     }
 
     [Theory]
@@ -122,8 +136,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce(input, typeof(bool));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(expected);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(expected)
+        );
     }
 
     [Fact]
@@ -131,8 +147,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce("not-a-bool", typeof(bool));
 
-        result.Success.ShouldBeFalse();
-        result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidFormat);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidFormat)
+        );
     }
 
     // ── String coercion ────────────────────────────────────────────────
@@ -142,8 +160,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce(42, typeof(string));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe("42");
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe("42")
+        );
     }
 
     [Fact]
@@ -152,9 +172,11 @@ public sealed class TypeCoercionTests
         var dt = new DateTime(2026, 3, 15, 10, 30, 0);
         var result = TryCoerce(dt, typeof(string));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBeOfType<string>();
-        ((string)result.Value!).ShouldContain("2026");
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBeOfType<string>(),
+            () => ((string)result.Value!).ShouldContain("2026")
+        );
     }
 
     // ── DateTime coercion ──────────────────────────────────────────────
@@ -177,8 +199,10 @@ public sealed class TypeCoercionTests
     public void Coerce_DateOnlyToDateTime_Converts()
     {
         var result = Coerce(new DateOnly(2026, 3, 15), typeof(DateTime));
-        result.ShouldBeOfType<DateTime>();
-        ((DateTime)result!).Date.ShouldBe(new DateTime(2026, 3, 15));
+        result.ShouldSatisfyAllConditions(
+            () => result.ShouldBeOfType<DateTime>(),
+            () => ((DateTime)result!).Date.ShouldBe(new DateTime(2026, 3, 15))
+        );
     }
 
     [Fact]
@@ -186,8 +210,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce(new DateTime(2026, 3, 15, 10, 30, 0), typeof(DateOnly));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(new DateOnly(2026, 3, 15));
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(new DateOnly(2026, 3, 15))
+        );
     }
 
     [Fact]
@@ -196,8 +222,10 @@ public sealed class TypeCoercionTests
         var dto = new DateTimeOffset(2026, 3, 15, 10, 30, 0, TimeSpan.FromHours(-5));
         var result = TryCoerce(dto, typeof(DateTime));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBeOfType<DateTime>();
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBeOfType<DateTime>()
+        );
     }
 
     [Fact]
@@ -206,8 +234,10 @@ public sealed class TypeCoercionTests
         var dt = new DateTime(2026, 3, 15, 10, 30, 0, DateTimeKind.Utc);
         var result = TryCoerce(dt, typeof(DateTimeOffset));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBeOfType<DateTimeOffset>();
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBeOfType<DateTimeOffset>()
+        );
     }
 
     // ── Guid coercion ──────────────────────────────────────────────────
@@ -251,9 +281,11 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce("1", typeof(DayOfWeek));
 
-        result.Success.ShouldBeFalse();
-        result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidEnumMember);
-        result.Error.ShouldContain("Enum values must be string names only");
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidEnumMember),
+            () => result.Error.ShouldContain("Enum values must be string names only")
+        );
     }
 
     [Fact]
@@ -261,9 +293,11 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce(1, typeof(DayOfWeek));
 
-        result.Success.ShouldBeFalse();
-        result.ErrorCode.ShouldBe(CoercionErrorCode.UnsupportedSourceType);
-        result.Error.ShouldContain("Enum values must be string names only");
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.UnsupportedSourceType),
+            () => result.Error.ShouldContain("Enum values must be string names only")
+        );
     }
 
     [Fact]
@@ -271,8 +305,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce("NotADay", typeof(DayOfWeek));
 
-        result.Success.ShouldBeFalse();
-        result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidEnumMember);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidEnumMember)
+        );
     }
 
     // ── Fallback coercion ──────────────────────────────────────────────
@@ -283,8 +319,10 @@ public sealed class TypeCoercionTests
         // char is not registered in the coercer dictionary — falls through to FallbackTypeCoercer
         var result = TryCoerce("A", typeof(char));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe('A');
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe('A')
+        );
     }
 
     [Fact]
@@ -292,8 +330,10 @@ public sealed class TypeCoercionTests
     {
         var result = TryCoerce(new object(), typeof(int));
 
-        result.Success.ShouldBeFalse();
-        result.ErrorCode.ShouldBe(CoercionErrorCode.ConversionFailed);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.ConversionFailed)
+        );
     }
 
     // ── JsonElement coercion ───────────────────────────────────────────
@@ -305,8 +345,10 @@ public sealed class TypeCoercionTests
 
         var result = TryCoerce(value, typeof(int));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(123);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(123)
+        );
     }
 
     [Fact]
@@ -316,8 +358,10 @@ public sealed class TypeCoercionTests
 
         var result = TryCoerce(value, typeof(decimal));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(123.45m);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(123.45m)
+        );
     }
 
     [Theory]
@@ -331,8 +375,10 @@ public sealed class TypeCoercionTests
         var value = ParseJsonElement(json);
         var result = TryCoerce(value, targetType);
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(expected);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(expected)
+        );
     }
 
     [Fact]
@@ -342,8 +388,10 @@ public sealed class TypeCoercionTests
 
         var result = TryCoerce(value, typeof(bool));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(true);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(true)
+        );
     }
 
     [Fact]
@@ -353,8 +401,10 @@ public sealed class TypeCoercionTests
 
         var result = TryCoerce(value, typeof(int?));
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBeNull();
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBeNull()
+        );
     }
 
     [Fact]
@@ -364,8 +414,10 @@ public sealed class TypeCoercionTests
 
         var result = TryCoerce(value, typeof(int));
 
-        result.Success.ShouldBeFalse();
-        result.ErrorCode.ShouldBe(CoercionErrorCode.ConversionFailed);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.ConversionFailed)
+        );
     }
 
     [Fact]
@@ -375,10 +427,12 @@ public sealed class TypeCoercionTests
 
         var result = TryCoerce(value, typeof(JsonPayload));
 
-        result.Success.ShouldBeTrue();
-        var payload = result.Value.ShouldBeOfType<JsonPayload>();
-        payload.Name.ShouldBe("Ada");
-        payload.Age.ShouldBe(42);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBeOfType<JsonPayload>(),
+            () => ((JsonPayload)result.Value!).Name.ShouldBe("Ada"),
+            () => ((JsonPayload)result.Value!).Age.ShouldBe(42)
+        );
     }
 
     [Fact]
@@ -388,9 +442,11 @@ public sealed class TypeCoercionTests
 
         var result = TryCoerce(value, typeof(List<int>));
 
-        result.Success.ShouldBeTrue();
-        var list = result.Value.ShouldBeOfType<List<int>>();
-        list.ShouldBe([1, 2, 3]);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBeOfType<List<int>>(),
+            () => ((List<int>)result.Value!).ShouldBe([1, 2, 3])
+        );
     }
 
     [Fact]
@@ -400,8 +456,10 @@ public sealed class TypeCoercionTests
 
         var result = TryCoerce(value, typeof(int));
 
-        result.Success.ShouldBeFalse();
-        result.ErrorCode.ShouldBe(CoercionErrorCode.UnsupportedSourceType);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.UnsupportedSourceType)
+        );
     }
 
     [Fact]
@@ -411,8 +469,10 @@ public sealed class TypeCoercionTests
 
         var result = TryCoerce(value, typeof(string));
 
-        result.Success.ShouldBeFalse();
-        result.ErrorCode.ShouldBe(CoercionErrorCode.UnsupportedSourceType);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.UnsupportedSourceType)
+        );
     }
 
     // ── Coerce exception behavior ──────────────────────────────────────
@@ -432,8 +492,10 @@ public sealed class TypeCoercionTests
         var exception = Should.Throw<TypeCoercionException>(() =>
             Coerce("not-a-guid", typeof(Guid)));
 
-        exception.InnerException.ShouldNotBeNull();
-        exception.InnerException.ShouldBeOfType<FormatException>();
+        exception.ShouldSatisfyAllConditions(
+            () => exception.InnerException.ShouldNotBeNull(),
+            () => exception.InnerException.ShouldBeOfType<FormatException>()
+        );
     }
 
     // ── CoercionResult invariants ──────────────────────────────────────
@@ -443,11 +505,13 @@ public sealed class TypeCoercionTests
     {
         var result = CoercionResult.Ok(42);
 
-        result.Success.ShouldBeTrue();
-        result.Value.ShouldBe(42);
-        result.Error.ShouldBe(string.Empty);
-        result.ErrorCode.ShouldBe(CoercionErrorCode.None);
-        result.OriginalException.ShouldBeNull();
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeTrue(),
+            () => result.Value.ShouldBe(42),
+            () => result.Error.ShouldBe(string.Empty),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.None),
+            () => result.OriginalException.ShouldBeNull()
+        );
     }
 
     [Fact]
@@ -455,11 +519,13 @@ public sealed class TypeCoercionTests
     {
         var result = CoercionResult.Fail("error msg", CoercionErrorCode.InvalidFormat);
 
-        result.Success.ShouldBeFalse();
-        result.Value.ShouldBeNull();
-        result.Error.ShouldBe("error msg");
-        result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidFormat);
-        result.OriginalException.ShouldBeNull();
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.Value.ShouldBeNull(),
+            () => result.Error.ShouldBe("error msg"),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.InvalidFormat),
+            () => result.OriginalException.ShouldBeNull()
+        );
     }
 
     [Fact]
@@ -476,9 +542,11 @@ public sealed class TypeCoercionTests
     {
         var result = default(CoercionResult);
 
-        result.Success.ShouldBeFalse();
-        result.Value.ShouldBeNull();
-        result.ErrorCode.ShouldBe(CoercionErrorCode.None);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.Value.ShouldBeNull(),
+            () => result.ErrorCode.ShouldBe(CoercionErrorCode.None)
+        );
     }
 
     // ── TryCoerce never throws (C1 contract) ──────────────────────────
@@ -490,8 +558,10 @@ public sealed class TypeCoercionTests
         // Passing an unusual type that might trigger unexpected exceptions.
         var result = TryCoerce(new object(), typeof(DateTime));
 
-        result.Success.ShouldBeFalse();
-        result.ErrorCode.ShouldNotBe(CoercionErrorCode.None);
+        result.ShouldSatisfyAllConditions(
+            () => result.Success.ShouldBeFalse(),
+            () => result.ErrorCode.ShouldNotBe(CoercionErrorCode.None)
+        );
     }
 
     private static JsonElement ParseJsonElement(string json)
