@@ -164,6 +164,40 @@ public static class TypeCoercion
             : new TypeCoercionException(result.Error, result.ErrorCode);
     }
 
+    /// <summary>
+    /// Attempts to coerce <paramref name="value"/> to <typeparamref name="T"/> without throwing using default options.
+    /// </summary>
+    public static CoercionResult<T> TryCoerce<T>(object? value)
+        => TryCoerce<T>(value, TypeCoercionOptions.Default);
+
+    /// <summary>
+    /// Attempts to coerce <paramref name="value"/> to <typeparamref name="T"/> without throwing.
+    /// </summary>
+    public static CoercionResult<T> TryCoerce<T>(object? value, TypeCoercionOptions options)
+    {
+        var result = TryCoerce(value, typeof(T), options);
+        if (result.Success)
+        {
+            return CoercionResult<T>.Ok(result.Value == null ? default : (T)result.Value);
+        }
+        return CoercionResult<T>.Fail(result.Error, result.ErrorCode, result.OriginalException);
+    }
+
+    /// <summary>
+    /// Coerces <paramref name="value"/> to <typeparamref name="T"/>, throwing on failure, using default options.
+    /// </summary>
+    public static T? Coerce<T>(object? value)
+        => Coerce<T>(value, TypeCoercionOptions.Default);
+
+    /// <summary>
+    /// Coerces <paramref name="value"/> to <typeparamref name="T"/>, throwing on failure.
+    /// </summary>
+    public static T? Coerce<T>(object? value, TypeCoercionOptions options)
+    {
+        var result = Coerce(value, typeof(T), options);
+        return result == null ? default : (T)result;
+    }
+
     private static CoercionResult TryCoerceJsonElement(JsonElement jsonElement, Type targetType, TypeCoercionOptions options)
     {
         return jsonElement.ValueKind switch
