@@ -21,6 +21,8 @@ public static class TypeCoercion
         typeof(decimal)
     ];
 
+    internal static bool IsNumericType(Type type) => Array.IndexOf(NumericTypes, type) >= 0;
+
     private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true
@@ -97,22 +99,8 @@ public static class TypeCoercion
         if (effectiveType.IsInstanceOfType(value))
             return CoercionResult.Ok(value);
 
-        // Before, it was a dictionary lookup. Now, let's try mapping known types to the built-in coercers,
-        // but FIRST let's check the options.Coercers for any custom overrides.
-        // Actually, the new design specifies building a Dictionary internally or checking types directly,
-        // but consumers can insert into `options.Coercers`.
-        // Since `ITypeCoercer` doesn't have `CanHandle`, if a custom coercer can't handle it, what does it return? 
-        // It returns a Failure Result. We shouldn't stop at the first failure if it's just unsupported.
-        // But `UnsupportedSourceType` is an error code. 
-        // We will execute `options.Coercers` in order. If it returns Success, we are done.
-        // If it returns a Failure that is NOT UnsupportedSourceType, we probably still want to fail?
-        // Actually, the simplest approach is just to map the built-ins based on type, just like before,
-        // but we evaluate custom ones first.
-        
-        // Wait, the original code had:
-        // if (Coercers.TryGetValue(effectiveType, out var coercer)) return coercer.TryCoerce(...);
-        // Let's implement that exact mapping internally.
-        
+        // Dispatch to the first coercer that handles this type.
+        // UnsupportedSourceType failures are skipped; any other failure is returned immediately.
         return DispatchToCoercer(value, effectiveType, declaredType, options);
     }
     

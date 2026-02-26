@@ -25,7 +25,7 @@ public static class JsonElementCoercionExtensions
     public static bool TryCoerceTo<T>(this JsonElement element, out T? result, TypeCoercionOptions? options = null)
     {
         var coercionResult = TypeCoercion.TryCoerce<T>(element, options ?? TypeCoercionOptions.Default);
-        result = coercionResult.Success ? (coercionResult.Value == null ? default : (T)coercionResult.Value) : default;
+        result = coercionResult.Success ? coercionResult.Value : default;
         return coercionResult.Success;
     }
 }

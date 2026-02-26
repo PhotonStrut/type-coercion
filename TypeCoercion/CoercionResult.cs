@@ -119,7 +119,9 @@ public readonly struct CoercionResult<T> : IEquatable<CoercionResult<T>>
     public static implicit operator CoercionResult(CoercionResult<T> result)
     {
         if (result.Success) return CoercionResult.Ok(result.Value);
-        return CoercionResult.Fail(result.Error, result.ErrorCode, result.OriginalException!);
+        return result.OriginalException is not null
+            ? CoercionResult.Fail(result.Error, result.ErrorCode, result.OriginalException)
+            : CoercionResult.Fail(result.Error, result.ErrorCode);
     }
     
     /// <inheritdoc />

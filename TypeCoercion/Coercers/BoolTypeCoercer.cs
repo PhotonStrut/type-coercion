@@ -14,11 +14,17 @@ internal sealed class BoolTypeCoercer : ITypeCoercer
         if (effectiveType != typeof(bool))
             return CoercionResult.Fail("Type is not bool.", CoercionErrorCode.UnsupportedSourceType);
 
+        if (value is string boolString)
+        {
+            if (bool.TryParse(boolString, out var boolValue))
+                return CoercionResult.Ok(boolValue);
+            return CoercionResult.Fail(
+                $"String '{boolString}' is not a valid Boolean.",
+                CoercionErrorCode.InvalidFormat);
+        }
+
         try
         {
-            if (value is string boolString)
-                return CoercionResult.Ok(bool.Parse(boolString));
-
             return CoercionResult.Ok(Convert.ToBoolean(value, options.Culture));
         }
         catch (Exception ex)

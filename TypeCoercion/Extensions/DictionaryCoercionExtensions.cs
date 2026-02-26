@@ -29,7 +29,7 @@ public static class DictionaryCoercionExtensions
         var result = TypeCoercion.TryCoerce<T>(value, options ?? TypeCoercionOptions.Default);
         if (result.Success)
         {
-             return result.Value == null ? default : (T)result.Value;
+             return result.Value;
         }
         return defaultValue;
     }

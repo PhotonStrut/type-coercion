@@ -25,7 +25,7 @@ public static class StringCoercionExtensions
     public static bool TryCoerceTo<T>(this string? value, out T? result, TypeCoercionOptions? options = null)
     {
         var coercionResult = TypeCoercion.TryCoerce<T>(value, options ?? TypeCoercionOptions.Default);
-        result = coercionResult.Success ? (coercionResult.Value == null ? default : (T)coercionResult.Value) : default;
+        result = coercionResult.Success ? coercionResult.Value : default;
         return coercionResult.Success;
     }
 }
