@@ -28,4 +28,23 @@ public static class StringCoercionExtensions
         result = coercionResult.Success ? coercionResult.Value : default;
         return coercionResult.Success;
     }
+
+    /// <summary>
+    /// Coerces a string to the specified type and returns <c>default</c> on failure.
+    /// </summary>
+    public static T? CoerceToOrDefault<T>(this string? value, TypeCoercionOptions? options = null)
+        => TypeCoercer.CoerceOrDefault<T>(value, options ?? TypeCoercionOptions.Default);
+
+    /// <summary>
+    /// Coerces a string to the specified type and returns <c>null</c> on failure.
+    /// For non-nullable value types, this method throws when coercion fails because null cannot be represented.
+    /// </summary>
+    public static T? CoerceToOrNull<T>(this string? value, TypeCoercionOptions? options = null)
+        => TypeCoercer.CoerceOrNull<T>(value, options ?? TypeCoercionOptions.Default);
+
+    /// <summary>
+    /// Coerces a string to the specified type and returns <paramref name="fallbackValue"/> on failure.
+    /// </summary>
+    public static T? CoerceToOrFallback<T>(this string? value, T? fallbackValue, TypeCoercionOptions? options = null)
+        => TypeCoercer.CoerceOrFallback(value, fallbackValue, options ?? TypeCoercionOptions.Default);
 }

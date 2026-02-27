@@ -35,4 +35,31 @@ public class TypeCoercionGenericTests
         var value = Coerce<int>("42");
         value.ShouldBe(42);
     }
+
+    [Fact]
+    public void CoerceOrDefaultGeneric_Failure_ReturnsTypeDefault()
+    {
+        var value = CoerceOrDefault<int>("not-a-number");
+        value.ShouldBe(0);
+    }
+
+    [Fact]
+    public void CoerceOrNullGeneric_Failure_ReturnsNull()
+    {
+        var value = CoerceOrNull<int?>("not-a-number");
+        value.ShouldBeNull();
+    }
+
+    [Fact]
+    public void CoerceOrNullGeneric_NonNullableValueType_Failure_ThrowsInvalidOperationException()
+    {
+        Should.Throw<System.InvalidOperationException>(() => CoerceOrNull<int>("not-a-number"));
+    }
+
+    [Fact]
+    public void CoerceOrFallbackGeneric_Failure_ReturnsFallback()
+    {
+        var value = CoerceOrFallback("not-a-number", 7);
+        value.ShouldBe(7);
+    }
 }

@@ -27,4 +27,34 @@ public class StringCoercionExtensionsTests
             () => failResult.ShouldBe(0)
         );
     }
+
+    [Fact]
+    public void CoerceToOrDefault_Failure_ReturnsTypeDefault()
+    {
+        "bad".CoerceToOrDefault<int>().ShouldBe(0);
+    }
+
+    [Fact]
+    public void CoerceToOrDefault_Success_ReturnsCoercedValue()
+    {
+        "42".CoerceToOrDefault<int>().ShouldBe(42);
+    }
+
+    [Fact]
+    public void CoerceToOrNull_Failure_ReturnsNull()
+    {
+        "bad".CoerceToOrNull<int?>().ShouldBeNull();
+    }
+
+    [Fact]
+    public void CoerceToOrNull_NonNullableValueType_Failure_ThrowsInvalidOperationException()
+    {
+        Should.Throw<System.InvalidOperationException>(() => "bad".CoerceToOrNull<int>());
+    }
+
+    [Fact]
+    public void CoerceToOrFallback_Failure_ReturnsProvidedFallback()
+    {
+        "bad".CoerceToOrFallback(5).ShouldBe(5);
+    }
 }

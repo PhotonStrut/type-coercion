@@ -36,6 +36,32 @@ public sealed class TypeCoercionTests
         Coerce(42, typeof(int)).ShouldBe(42);
     }
 
+    [Fact]
+    public void CoerceOrDefault_NonGeneric_Success_ReturnsCoercedValue()
+    {
+        CoerceOrDefault("42", typeof(int)).ShouldBe(42);
+    }
+
+    [Fact]
+    public void CoerceOrDefault_NonGeneric_Failure_ReturnsTypeDefault()
+    {
+        CoerceOrDefault("bad", typeof(int)).ShouldBe(0);
+    }
+
+    [Fact]
+    public void CoerceOrNull_NonGeneric_Failure_ReturnsNull()
+    {
+        CoerceOrNull("bad", typeof(Guid)).ShouldBeNull();
+    }
+
+    [Fact]
+    public void CoerceOrDefault_NonGeneric_VoidTarget_Failure_ReturnsNullWithoutThrowing()
+    {
+        object? value = null;
+        Should.NotThrow(() => value = CoerceOrDefault("bad", typeof(void)));
+        value.ShouldBeNull();
+    }
+
     // ── Nullable target with non-null value (S6) ───────────────────────
 
     [Fact]

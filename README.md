@@ -8,7 +8,8 @@ A lightweight, extensible, and high-performance type coercion library for .NET 1
 - **Throwing Overloads**: `Coerce` methods throw `TypeCoercionException` with structured error codes when coercion fails.
 - **Built-In Coercers**: Handles `string`, `bool`, `enum`, all numeric types, `Guid`, `DateTime`, `DateTimeOffset`, `DateOnly`, `TimeOnly`, and `TimeSpan` out of the box.
 - **Native JSON Support**: Coerces `System.Text.Json.JsonElement` values directly, including numeric extraction and structural deserialization of objects/arrays.
-- **Extension Methods**: Fluent `.CoerceTo<T>()` and `.TryCoerceTo<T>()` extensions for `string`, `JsonElement`, and `IDictionary<string, object?>`.
+- **Extension Methods**: Fluent coercion extensions for runtime `Type`, `string`, `JsonElement`, and `IDictionary<string, object?>`.
+- **Fallback Helpers**: `CoerceOrDefault`, `CoerceOrNull`, and `CoerceOrFallback` overloads for resilient conversions without exceptions.
 - **Extensible**: Inject custom coercion logic by implementing `ITypeCoercer`.
 - **High Performance**: Avoids heap allocations in critical paths, uses `TryParse` fast-paths for string-to-number conversions, and avoids enumerator boxing.
 
@@ -66,6 +67,21 @@ catch (TypeCoercionException ex)
 }
 ```
 
+### Fallback Coercion
+
+Use fallback helpers when you want non-throwing coercion with a direct value result.
+
+```csharp
+using TypeCoercion;
+
+int number = TypeCoercer.CoerceOrDefault<int>("bad");            // 0
+int? nullable = TypeCoercer.CoerceOrNull<int?>("bad");           // null
+int chosen = TypeCoercer.CoerceOrFallback("bad", fallbackValue: 7); // 7
+
+// Note: use nullable targets with CoerceOrNull<T>() for value types.
+// CoerceOrNull<int>("bad") throws because int cannot represent null.
+```
+
 ### Non-Generic Overloads
 
 When the target type is only known at runtime:
@@ -73,6 +89,8 @@ When the target type is only known at runtime:
 ```csharp
 CoercionResult result = TypeCoercer.TryCoerce("42", typeof(int));
 object? value = TypeCoercer.Coerce("42", typeof(int));
+object? fallbackDefault = TypeCoercer.CoerceOrDefault("bad", typeof(int)); // 0 (boxed)
+object? fallbackNull = TypeCoercer.CoerceOrNull("bad", typeof(Guid));       // null
 ```
 
 ## Extension Methods
@@ -86,11 +104,26 @@ using TypeCoercion.Extensions;
 
 int number = "42".CoerceTo<int>();
 CoercionResult<int> result = "42".TryCoerceTo<int>();
+int defaulted = "bad".CoerceToOrDefault<int>();     // 0
+int? nulled = "bad".CoerceToOrNull<int?>();         // null
+int fallback = "bad".CoerceToOrFallback(5);         // 5
 
 if ("42".TryCoerceTo<int>(out int parsed))
 {
     Console.WriteLine(parsed);
 }
+```
+
+### Type Extensions
+
+```csharp
+using TypeCoercion.Extensions;
+
+Type intType = typeof(int);
+
+object? value = intType.Coerce("42");             // 42 (boxed)
+object? defaulted = intType.CoerceOrDefault("x"); // 0 (boxed)
+object? nulled = intType.CoerceOrNull("x");       // null
 ```
 
 ### JsonElement Extensions

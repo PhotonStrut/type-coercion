@@ -41,6 +41,18 @@ public static class TypeCoercer
         => Coerce(value, targetType, TypeCoercionOptions.Default);
 
     /// <summary>
+    /// Coerces <paramref name="value"/> to <paramref name="targetType"/> and returns the target type default value on failure, using default options.
+    /// </summary>
+    public static object? CoerceOrDefault(object? value, Type targetType)
+        => CoerceOrDefault(value, targetType, TypeCoercionOptions.Default);
+
+    /// <summary>
+    /// Coerces <paramref name="value"/> to <paramref name="targetType"/> and returns <c>null</c> on failure, using default options.
+    /// </summary>
+    public static object? CoerceOrNull(object? value, Type targetType)
+        => CoerceOrNull(value, targetType, TypeCoercionOptions.Default);
+
+    /// <summary>
     /// Attempts to coerce <paramref name="value"/> to <paramref name="targetType"/> without throwing.
     /// </summary>
     public static CoercionResult TryCoerce(object? value, Type targetType, TypeCoercionOptions options)
@@ -72,6 +84,24 @@ public static class TypeCoercer
         // Dispatch to the first coercer that handles this type.
         // UnsupportedSourceType failures are skipped; any other failure is returned immediately.
         return DispatchToCoercer(value, effectiveType, declaredType, options);
+    }
+
+    /// <summary>
+    /// Coerces <paramref name="value"/> to <paramref name="targetType"/> and returns the target type default value on failure.
+    /// </summary>
+    public static object? CoerceOrDefault(object? value, Type targetType, TypeCoercionOptions options)
+    {
+        var result = TryCoerce(value, targetType, options);
+        return result.Success ? result.Value : GetTargetDefaultValue(targetType);
+    }
+
+    /// <summary>
+    /// Coerces <paramref name="value"/> to <paramref name="targetType"/> and returns <c>null</c> on failure.
+    /// </summary>
+    public static object? CoerceOrNull(object? value, Type targetType, TypeCoercionOptions options)
+    {
+        var result = TryCoerce(value, targetType, options);
+        return result.Success ? result.Value : null;
     }
     
     private static CoercionResult DispatchToCoercer(object value, Type effectiveType, Type declaredType, TypeCoercionOptions options)
@@ -151,12 +181,68 @@ public static class TypeCoercer
         => Coerce<T>(value, TypeCoercionOptions.Default);
 
     /// <summary>
+    /// Coerces <paramref name="value"/> to <typeparamref name="T"/> and returns <c>default</c> on failure, using default options.
+    /// </summary>
+    public static T? CoerceOrDefault<T>(object? value)
+        => CoerceOrDefault<T>(value, TypeCoercionOptions.Default);
+
+    /// <summary>
+    /// Coerces <paramref name="value"/> to <typeparamref name="T"/> and returns <c>null</c> on failure, using default options.
+    /// For non-nullable value types, this method throws when coercion fails because null cannot be represented.
+    /// </summary>
+    public static T? CoerceOrNull<T>(object? value)
+        => CoerceOrNull<T>(value, TypeCoercionOptions.Default);
+
+    /// <summary>
+    /// Coerces <paramref name="value"/> to <typeparamref name="T"/> and returns <paramref name="fallbackValue"/> on failure, using default options.
+    /// </summary>
+    public static T? CoerceOrFallback<T>(object? value, T? fallbackValue)
+        => CoerceOrFallback(value, fallbackValue, TypeCoercionOptions.Default);
+
+    /// <summary>
     /// Coerces <paramref name="value"/> to <typeparamref name="T"/>, throwing on failure.
     /// </summary>
     public static T? Coerce<T>(object? value, TypeCoercionOptions options)
     {
         var result = Coerce(value, typeof(T), options);
         return result == null ? default : (T)result;
+    }
+
+    /// <summary>
+    /// Coerces <paramref name="value"/> to <typeparamref name="T"/> and returns <c>default</c> on failure.
+    /// </summary>
+    public static T? CoerceOrDefault<T>(object? value, TypeCoercionOptions options)
+    {
+        var result = TryCoerce<T>(value, options);
+        return result.Success ? result.Value : default;
+    }
+
+    /// <summary>
+    /// Coerces <paramref name="value"/> to <typeparamref name="T"/> and returns <c>null</c> on failure.
+    /// For non-nullable value types, this method throws when coercion fails because null cannot be represented.
+    /// </summary>
+    public static T? CoerceOrNull<T>(object? value, TypeCoercionOptions options)
+    {
+        var result = TryCoerce<T>(value, options);
+        if (result.Success)
+            return result.Value;
+
+        if (!IsNullableTargetType(typeof(T)))
+        {
+            throw new InvalidOperationException(
+                $"CoerceOrNull<{typeof(T).Name}> cannot return null for a non-nullable value type. Use {typeof(T).Name}? instead.");
+        }
+
+        return default;
+    }
+
+    /// <summary>
+    /// Coerces <paramref name="value"/> to <typeparamref name="T"/> and returns <paramref name="fallbackValue"/> on failure.
+    /// </summary>
+    public static T? CoerceOrFallback<T>(object? value, T? fallbackValue, TypeCoercionOptions options)
+    {
+        var result = TryCoerce<T>(value, options);
+        return result.Success ? result.Value : fallbackValue;
     }
 
     private static CoercionResult TryCoerceJsonElement(JsonElement jsonElement, Type targetType, TypeCoercionOptions options)
@@ -253,6 +339,29 @@ public static class TypeCoercer
 
     private static bool IsNullableTargetType(Type targetType)
         => !targetType.IsValueType || Nullable.GetUnderlyingType(targetType) is not null;
+
+    private static object? GetTargetDefaultValue(Type targetType)
+    {
+        var nullableUnderlyingType = Nullable.GetUnderlyingType(targetType);
+        if (nullableUnderlyingType is not null)
+            return null;
+
+        if (!targetType.IsValueType || targetType == typeof(void))
+            return null;
+
+        try
+        {
+            return Activator.CreateInstance(targetType);
+        }
+        catch (MemberAccessException)
+        {
+            return null;
+        }
+        catch (NotSupportedException)
+        {
+            return null;
+        }
+    }
 
     private static bool IsComplexType(Type targetType)
     {
